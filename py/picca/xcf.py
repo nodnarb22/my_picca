@@ -918,7 +918,7 @@ def compute_xi_1d(healpixs):
                 continue
 
             z_qso = [obj.z_qso for obj in neighbours]
-            weights_qso = [obj.weights * obj.weight_comp for obj in neighbours]
+            weights_qso = [obj.weights for obj in neighbours]
             lambda_qso = [10.**obj.log_lambda for obj in neighbours]
             ang = np.zeros(len(lambda_qso))
 
