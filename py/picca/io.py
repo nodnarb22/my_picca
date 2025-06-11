@@ -102,7 +102,7 @@ def read_drq(drq_filename,
     userprint('Reading catalog from ', drq_filename)
     catalog = Table(fitsio.read(drq_filename, ext=1))
 
-    keep_columns = ['RA', 'DEC', 'Z']
+    keep_columns = ['RA', 'DEC', 'Z', 'WEIGHT_COMP']
 
     if 'desi' in mode and 'TARGETID' in catalog.colnames:
         obj_id_name = 'TARGETID'
@@ -465,6 +465,7 @@ def read_objects(filename,
     objs = {}
 
     catalog = read_drq(filename, z_min=z_min, z_max=z_max, keep_bal=keep_bal, mode=mode)
+    print("Columns in catalog:", catalog.colnames)
 
     phi = catalog['RA']
     theta = np.pi / 2. - catalog['DEC']
@@ -497,16 +498,15 @@ def read_objects(filename,
                 fibercol = "TARGETID"
             objs[healpix] = [
                 QSO(entry['TARGETID'], entry['RA'], entry['DEC'], entry['Z'],
-                entry['TARGETID'], entry[nightcol], entry[fibercol])
+                entry['TARGETID'], entry['WEIGHT_COMP'], entry[nightcol], entry[fibercol])
                 for entry in catalog[w]
             ]
         else:
             objs[healpix] = [
                 QSO(entry['THING_ID'], entry['RA'], entry['DEC'], entry['Z'],
-                    entry['PLATE'], entry['MJD'], entry['FIBERID'])
+                    entry['PLATE'], entry['MJD'], entry['FIBERID'], entry['WEIGHT_COMP'])
                 for entry in catalog[w]
             ]
-
         for obj in objs[healpix]:
             obj.weights = ((1. + obj.z_qso) / (1. + z_ref))**(alpha - 1.)
             if not cosmo is None:

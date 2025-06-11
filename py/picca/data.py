@@ -57,7 +57,7 @@ class QSO(object):
         get_angle_between: Computes the angular separation between two quasars.
     """
 
-    def __init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid):
+    def __init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, w_comp):
         """Initializes class instance.
 
         Args:
@@ -75,6 +75,8 @@ class QSO(object):
                 Modified Julian Date of the observation.
             fiberid: integer
                 Fiberid of the observation.
+            w_comp: float
+                Weight applied for completeness.
         """
         self.ra = ra
         self.dec = dec
@@ -82,6 +84,7 @@ class QSO(object):
         self.plate = plate
         self.mjd = mjd
         self.fiberid = fiberid
+        self.w_comp = w_comp
 
         ## cartesian coordinates
         self.x_cart = np.cos(ra) * np.cos(dec)
@@ -97,6 +100,7 @@ class QSO(object):
 
         # variables computed in function io.read_objects
         self.weight = None
+        self.weight_comp = None
         self.r_comov = None
         self.dist_m = None
 
@@ -292,7 +296,7 @@ class Delta(QSO):
     """
 
     def __init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, log_lambda,
-                 weights, cont, delta, order, ivar, exposures_diff, mean_snr,
+                 weights, w_comp, cont, delta, order, ivar, exposures_diff, mean_snr,
                  mean_reso, mean_z, resolution_matrix=None,
                  mean_resolution_matrix=None, mean_reso_pix=None):
         """Initializes class instances.
@@ -341,9 +345,10 @@ class Delta(QSO):
             delta_log_lambda: float
                 Variation of the logarithm of the wavelength between two pixels
         """
-        QSO.__init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid)
+        QSO.__init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, w_comp)
         self.log_lambda = log_lambda
         self.weights = weights
+        self.w_comp = w_comp
         self.cont = cont
         self.delta = delta
         self.order = order
@@ -565,6 +570,7 @@ class Delta(QSO):
         mean_resolution_matrix = Nones
         mean_reso_pix = Nones
         weights = hdul["WEIGHT"].read().astype(float)
+        #w_comp = hdul["WEIGHT_COMP"].read().astype(float)
         w = weights > 0
         cont = hdul["CONT"].read().astype(float)
 
