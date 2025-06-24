@@ -596,7 +596,7 @@ class Delta(QSO):
         for (los_id_i, ra_i, dec_i, z_qso_i, plate_i, mjd_i, fiberid_i, log_lambda,
             weights_i, cont_i, delta_i, order_i, ivar_i, exposures_diff_i, mean_snr_i,
             mean_reso_i, mean_z_i, resolution_matrix_i,
-            mean_resolution_matrix_i, mean_reso_pix_i, w_i,
+            mean_resolution_matrix_i, mean_reso_pix_i, w_i
         ) in zip(los_id, ra, dec, z_qso, plate, mjd, fiberid, repeat(log_lambda),
                    weights, cont, delta, order, ivar, exposures_diff, mean_snr,
                    mean_reso, mean_z, resolution_matrix,
