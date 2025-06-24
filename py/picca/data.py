@@ -100,7 +100,6 @@ class QSO(object):
 
         # variables computed in function io.read_objects
         self.weight = None
-        self.weight_comp = None
         self.r_comov = None
         self.dist_m = None
 
@@ -296,9 +295,9 @@ class Delta(QSO):
     """
 
     def __init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, log_lambda,
-                 weights, w_comp, cont, delta, order, ivar, exposures_diff, mean_snr,
+                 weights, cont, delta, order, ivar, exposures_diff, mean_snr,
                  mean_reso, mean_z, resolution_matrix=None,
-                 mean_resolution_matrix=None, mean_reso_pix=None):
+                 mean_resolution_matrix=None, mean_reso_pix=None, w_comp = 1):
         """Initializes class instances.
 
         Args:
@@ -345,10 +344,9 @@ class Delta(QSO):
             delta_log_lambda: float
                 Variation of the logarithm of the wavelength between two pixels
         """
-        QSO.__init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, w_comp)
+        QSO.__init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, w_comp = 1)
         self.log_lambda = log_lambda
         self.weights = weights
-        self.w_comp = w_comp
         self.cont = cont
         self.delta = delta
         self.order = order
@@ -570,7 +568,6 @@ class Delta(QSO):
         mean_resolution_matrix = Nones
         mean_reso_pix = Nones
         weights = hdul["WEIGHT"].read().astype(float)
-        #w_comp = hdul["WEIGHT_COMP"].read().astype(float)
         w = weights > 0
         cont = hdul["CONT"].read().astype(float)
 
@@ -599,7 +596,7 @@ class Delta(QSO):
         for (los_id_i, ra_i, dec_i, z_qso_i, plate_i, mjd_i, fiberid_i, log_lambda,
             weights_i, cont_i, delta_i, order_i, ivar_i, exposures_diff_i, mean_snr_i,
             mean_reso_i, mean_z_i, resolution_matrix_i,
-            mean_resolution_matrix_i, mean_reso_pix_i, w_i
+            mean_resolution_matrix_i, mean_reso_pix_i, w_i,
         ) in zip(los_id, ra, dec, z_qso, plate, mjd, fiberid, repeat(log_lambda),
                    weights, cont, delta, order, ivar, exposures_diff, mean_snr,
                    mean_reso, mean_z, resolution_matrix,

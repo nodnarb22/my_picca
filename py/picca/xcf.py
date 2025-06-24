@@ -155,6 +155,7 @@ def compute_xi(healpixs):
                 z_qso = np.array([obj.z_qso for obj in delta.neighbours])
                 weights_qso = np.array(
                     [obj.weights for obj in delta.neighbours])
+                #print("Using object weights:", weights_qso[:5])
                 if ang_correlation:
                     lambda_qso = np.array(
                         [10.**obj.log_lambda for obj in delta.neighbours])
@@ -192,6 +193,8 @@ def compute_xi(healpixs):
     r_trans[w] /= weights[w]
     z[w] /= weights[w]
     return weights, xi, r_par, r_trans, z, num_pairs
+
+
 
 
 @njit

@@ -498,7 +498,7 @@ def read_objects(filename,
                 fibercol = "TARGETID"
             objs[healpix] = [
                 QSO(entry['TARGETID'], entry['RA'], entry['DEC'], entry['Z'],
-                entry['TARGETID'], entry['WEIGHT_COMP'], entry[nightcol], entry[fibercol])
+                entry['TARGETID'], entry[nightcol], entry[fibercol], entry['WEIGHT_COMP'])
                 for entry in catalog[w]
             ]
         else:
@@ -508,9 +508,15 @@ def read_objects(filename,
                 for entry in catalog[w]
             ]
         for obj in objs[healpix]:
-            obj.weights = ((1. + obj.z_qso) / (1. + z_ref))**(alpha - 1.)
+            weight_fid = ((1. + obj.z_qso) / (1. + z_ref))**(alpha - 1.)
+            weight_new = obj.w_comp * weight_fid
+            #print(np.mean(weight_fid),np.std(weight_fid),np.mean(weight_new),np.std(weight_new))
+            #print(obj.w_comp.shape,np.mean(obj.w_comp))
+            obj.weights = weight_new
+            
             if not cosmo is None:
                 obj.r_comov = cosmo.get_r_comov(obj.z_qso)
-                obj.dist_m = cosmo.get_dist_m(obj.z_qso)
+                obj.dist_m = cosmo.get_dist_m(obj.z_qso)   
 
     return objs, catalog['Z'].min()
+
