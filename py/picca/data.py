@@ -57,7 +57,7 @@ class QSO(object):
         get_angle_between: Computes the angular separation between two quasars.
     """
 
-    def __init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, w_comp):
+    def __init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, w_comp, w_sys, w_zfail):
         """Initializes class instance.
 
         Args:
@@ -77,6 +77,10 @@ class QSO(object):
                 Fiberid of the observation.
             w_comp: float
                 Weight applied for completeness.
+            w_sys: float
+                Weight applied for systematic differences.
+            w_zfail: float
+                Weight applied for spectroscopic condition differences.
         """
         self.ra = ra
         self.dec = dec
@@ -85,6 +89,8 @@ class QSO(object):
         self.mjd = mjd
         self.fiberid = fiberid
         self.w_comp = w_comp
+        self.w_sys = w_sys
+        self.w_zfail = w_zfail
 
         ## cartesian coordinates
         self.x_cart = np.cos(ra) * np.cos(dec)
@@ -297,7 +303,7 @@ class Delta(QSO):
     def __init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, log_lambda,
                  weights, cont, delta, order, ivar, exposures_diff, mean_snr,
                  mean_reso, mean_z, resolution_matrix=None,
-                 mean_resolution_matrix=None, mean_reso_pix=None, w_comp = 1):
+                 mean_resolution_matrix=None, mean_reso_pix=None, w_comp = 1, w_sys = 1, w_zfail = 1):
         """Initializes class instances.
 
         Args:
@@ -344,7 +350,7 @@ class Delta(QSO):
             delta_log_lambda: float
                 Variation of the logarithm of the wavelength between two pixels
         """
-        QSO.__init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, w_comp = 1)
+        QSO.__init__(self, los_id, ra, dec, z_qso, plate, mjd, fiberid, w_comp = 1, w_sys = 1, w_zfail = 1)
         self.log_lambda = log_lambda
         self.weights = weights
         self.cont = cont

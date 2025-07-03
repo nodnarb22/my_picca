@@ -102,7 +102,7 @@ def read_drq(drq_filename,
     userprint('Reading catalog from ', drq_filename)
     catalog = Table(fitsio.read(drq_filename, ext=1))
 
-    keep_columns = ['RA', 'DEC', 'Z', 'WEIGHT_COMP']
+    keep_columns = ['RA', 'DEC', 'Z', 'WEIGHT_COMP', 'WEIGHT_SYS', 'WEIGHT_ZFAIL']
 
     if 'desi' in mode and 'TARGETID' in catalog.colnames:
         obj_id_name = 'TARGETID'
@@ -498,18 +498,20 @@ def read_objects(filename,
                 fibercol = "TARGETID"
             objs[healpix] = [
                 QSO(entry['TARGETID'], entry['RA'], entry['DEC'], entry['Z'],
-                entry['TARGETID'], entry[nightcol], entry[fibercol], entry['WEIGHT_COMP'])
+                entry['TARGETID'], entry[nightcol], entry[fibercol], entry['WEIGHT_COMP'], entry['WEIGHT_SYS'], entry['WEIGHT_ZFAIL'])
                 for entry in catalog[w]
             ]
         else:
             objs[healpix] = [
                 QSO(entry['THING_ID'], entry['RA'], entry['DEC'], entry['Z'],
-                    entry['PLATE'], entry['MJD'], entry['FIBERID'], entry['WEIGHT_COMP'])
+                    entry['PLATE'], entry['MJD'], entry['FIBERID'], entry['WEIGHT_COMP'], entry['WEIGHT_SYS'], entry['WEIGHT_ZFAIL'])
                 for entry in catalog[w]
             ]
         for obj in objs[healpix]:
             weight_fid = ((1. + obj.z_qso) / (1. + z_ref))**(alpha - 1.)
             weight_new = obj.w_comp * weight_fid
+            weight_new = obj.w_sys * weight_new
+            weight_new = obj.w_zfail * weight_new
             #print(np.mean(weight_fid),np.std(weight_fid),np.mean(weight_new),np.std(weight_new))
             #print(obj.w_comp.shape,np.mean(obj.w_comp))
             obj.weights = weight_new
